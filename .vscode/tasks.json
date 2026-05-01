@@ -7,7 +7,7 @@
       "command": "gcc",
       "args": [
         "-o",
-        "output/hireme.exe",
+        "..\\output\\hireme.exe",
         "main.c",
         "db.c",
         "api.c",
