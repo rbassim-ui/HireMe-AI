@@ -6,9 +6,9 @@
 sqlite3 *db;
 
 void db_init() {
-    _mkdir("..\\output");
+    _mkdir("output");
 
-    int rc = sqlite3_open("..\\output\\hireme.db", &db);
+    int rc = sqlite3_open("output\\hireme.db", &db);
     if (rc != SQLITE_OK) {
         printf("Erreur ouverture DB: %s\n", sqlite3_errmsg(db));
         exit(1);

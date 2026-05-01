@@ -1,5 +1,10 @@
 # Ignore build outputs
-backend-c/output/
+# backend-c/output/ (kept tracked) - do not ignore
+# If you want outputs ignored, uncomment the line below and remove tracked binaries from git
+# backend-c/output/
+
+# Ignore top-level output/ if present
+output/
 
 # VS Code
 .vscode/
