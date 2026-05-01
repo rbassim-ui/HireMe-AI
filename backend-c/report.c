@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 void generate_interview_report(int interview_id) {
+    (void)interview_id;
     // TODO: Fetch interview results from database
     // TODO: Calculate performance metrics and scores
     // TODO: Generate formatted report

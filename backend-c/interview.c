@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 void start_interview(int interview_id) {
+    (void)interview_id;
     // TODO: Fetch interview questions from database
     // TODO: Display questions and capture responses
     // TODO: Track interview progress and timing

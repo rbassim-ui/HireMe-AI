@@ -11,6 +11,7 @@ void start_api_server();
 
 // Thread pour le serveur API
 DWORD WINAPI api_thread_func(LPVOID param) {
+    (void)param;
     start_api_server();
     return 0;
 }

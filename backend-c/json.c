@@ -8,6 +8,7 @@
 #include <string.h>
 
 char* parse_json_response(const char *response) {
+    (void)response;
     // TODO: Parse JSON response from API
     // TODO: Extract relevant fields
     // TODO: Return structured data

@@ -20,7 +20,10 @@
         "-lws2_32",
         "-D_WIN32_WINNT=0x0600",
         "-std=c11",
-        "-Wall"
+        "-Wall",
+        "-Wextra",
+        "-Wpedantic",
+        "-Wno-unused-parameter"
       ],
       "options": {
         "cwd": "${workspaceFolder}/backend-c"

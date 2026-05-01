@@ -8,6 +8,8 @@
 #include <string.h>
 
 void log_message(const char *level, const char *message) {
+    (void)level;
+    (void)message;
     // TODO: Format and log messages with timestamp
     // TODO: Write to console or log file
 }
