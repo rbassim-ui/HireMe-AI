@@ -1,37 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview - HireMe AI</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HireMe AI — Entretien en cours</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header>
-        <h1>Interview Session</h1>
-        <div class="progress-bar">
-            <div id="progress" style="width: 0%"></div>
+
+    <div class="bg-layer"></div>
+    <div class="bg-grid"></div>
+
+    <div class="timer-ring-wrap">
+        <div class="timer-ring">
+            <svg viewBox="0 0 64 64">
+                <circle class="ring-bg" cx="32" cy="32" r="28"/>
+                <circle class="ring-fg" id="timerRing" cx="32" cy="32" r="28"/>
+            </svg>
+            <div class="timer-text" id="timerText">60</div>
         </div>
-    </header>
-    
-    <main>
-        <section id="interview-container">
-            <div id="question-area">
-                <h2 id="question">Question will appear here</h2>
-                <textarea id="answer" placeholder="Type your response here..."></textarea>
-                <button id="submit-btn">Submit Answer</button>
+    </div>
+
+    <div class="page">
+
+        <div class="topbar">
+            <a href="index.html" class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 18 18" fill="none">
+                        <circle cx="9" cy="9" r="7" stroke="#0a0b0d" stroke-width="1.5"/>
+                        <path d="M6 9l2 2 4-4" stroke="#0a0b0d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="brand-name">Hire<span>Me</span> AI</div>
+            </a>
+            <div class="session-info">
+                <div class="badge-info">Candidat : <strong id="displayName">—</strong></div>
+                <div class="badge-info">Rôle : <strong id="displayRole">—</strong></div>
+                <div class="badge-info">Niveau : <strong id="displayLevel">—</strong></div>
             </div>
-            <div id="feedback" style="display:none;">
-                <h3>Feedback</h3>
-                <p id="feedback-text"></p>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-header">
+                <span class="progress-label">Progression de l'entretien</span>
+                <span class="progress-count" id="progressCount">Question 1 / 5</span>
             </div>
-        </section>
-    </main>
-    
-    <footer>
-        <p>&copy; 2026 HireMe AI. All rights reserved.</p>
-    </footer>
-    
-    <script src="script.js"></script>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="progress-dots" id="progressDots"></div>
+        </div>
+
+        <div class="question-card">
+            <div class="q-number" id="qNumber">Question 01</div>
+            <div class="question-text typing" id="questionText"></div>
+            <div class="q-meta" id="qMeta"></div>
+        </div>
+
+        <div class="answer-card">
+            <div class="answer-label">Votre réponse</div>
+            <textarea
+                id="answerInput"
+                placeholder="Rédigez votre réponse ici. Soyez clair, structuré et précis…"
+                oninput="updateCharCount()"
+                maxlength="2000"
+            ></textarea>
+            <div class="char-count" id="charCount">0 / 2000 caractères</div>
+            <div class="answer-actions">
+                <button class="btn-skip" onclick="skipQuestion()">Passer →</button>
+                <button class="btn-submit" id="submitBtn" onclick="submitAnswer()">Soumettre la réponse →</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="feedback-overlay" id="feedbackOverlay">
+        <div class="feedback-box">
+            <div class="score-display">
+                <div class="score-ring">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="sr-bg" cx="50" cy="50" r="43"/>
+                        <circle class="sr-fg" id="scoreFill" cx="50" cy="50" r="43"/>
+                    </svg>
+                    <div class="score-number">
+                        <div class="score-val" id="scoreVal">—</div>
+                        <div class="score-max">/ 10</div>
+                    </div>
+                </div>
+                <div class="feedback-title" id="feedbackTitle">Bonne réponse !</div>
+            </div>
+            <div class="feedback-text" id="feedbackText">Chargement…</div>
+            <button class="btn-next" id="nextBtn" onclick="nextQuestion()">Question suivante →</button>
+        </div>
+    </div>
+
+    <script src="interview.js"></script>
 </body>
 </html>

@@ -1,47 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Results - HireMe AI</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireMe AI — Rapport Final</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="result.css" />
 </head>
 <body>
-    <header>
-        <h1>Interview Results</h1>
-    </header>
-    
-    <main>
-        <section id="results-container">
-            <div id="score-card">
-                <h2>Your Score</h2>
-                <div class="score-display">
-                    <span id="overall-score">0</span>%
-                </div>
-            </div>
-            
-            <div id="analytics">
-                <h3>Detailed Analytics</h3>
-                <ul id="metrics-list">
-                    <li>Loading metrics...</li>
-                </ul>
-            </div>
-            
-            <div id="recommendations">
-                <h3>Recommendations</h3>
-                <ul id="recommendations-list">
-                    <li>Analyze your responses to get personalized feedback</li>
-                </ul>
-            </div>
-            
-            <button id="home-btn">Back to Home</button>
-        </section>
-    </main>
-    
-    <footer>
-        <p>&copy; 2026 HireMe AI. All rights reserved.</p>
-    </footer>
-    
-    <script src="script.js"></script>
+  <div class="bg-layer"></div>
+  <div class="bg-grid"></div>
+
+  <div class="page-result">
+
+    <div class="topbar">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7" stroke="#0a0b0d" stroke-width="1.5"/>
+            <path d="M6 9l2 2 4-4" stroke="#0a0b0d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="brand-name">Hire<span>Me</span> AI</div>
+      </a>
+      <a href="index.html" class="btn-new">Nouvel entretien →</a>
+    </div>
+
+    <div class="hero" id="hero"></div>
+    <div class="stats-row" id="statsRow"></div>
+    <div id="sections"></div>
+    <div class="actions" id="actions"></div>
+
+  </div>
+
+  <script src="result.js"></script>
 </body>
 </html>

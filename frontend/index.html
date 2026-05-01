@@ -1,30 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HireMe AI - Interview Simulator</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireMe AI — Démarrer l'entretien</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header>
-        <h1>HireMe AI</h1>
-        <p>Your AI-Powered Interview Simulator</p>
-    </header>
-    
-    <main>
-        <section id="welcome">
-            <h2>Welcome to HireMe AI</h2>
-            <p>Practice your interview skills with our AI-powered simulator.</p>
-            <button id="start-btn">Start Interview</button>
-            <button id="results-btn">View Results</button>
-        </section>
+  <div class="bg-layer"></div>
+  <div class="bg-grid"></div>
+
+  <div class="page">
+    <aside class="side-left">
+      <div class="stat-card">
+        <div class="num">01</div>
+        <div class="label">Formulaire de départ</div>
+      </div>
+      <div class="testimonial">
+        <p>Renseignez votre nom, votre domaine, votre rôle et votre niveau pour lancer une session adaptée.</p>
+        <div class="author">Session personnalisée</div>
+      </div>
+    </aside>
+
+    <main class="card">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 18 18" fill="none">
+            <circle cx="9" cy="9" r="7" stroke="#0a0b0d" stroke-width="1.5" />
+            <path d="M6 9l2 2 4-4" stroke="#0a0b0d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div class="brand-name">Hire<span>Me</span> AI</div>
+      </a>
+
+      <h1 class="card-title">Préparez votre entretien</h1>
+      <p class="card-sub">Commencez par quelques informations pour générer une session ciblée.</p>
+
+      <div class="field">
+        <label for="nameInput">Nom du candidat</label>
+        <input id="nameInput" type="text" placeholder="Ex. Name" autocomplete="name" />
+      </div>
+
+      <div class="fields-row">
+        <div class="field">
+          <label for="domainSelect">Domaine</label>
+          <div class="select-wrap">
+            <select id="domainSelect" onchange="updateRoles()">
+              <option value="">— Choisissez un domaine —</option>
+              <option value="tech">Tech</option>
+              <option value="design">Design</option>
+              <option value="data">Data</option>
+              <option value="finance">Finance</option>
+              <option value="marketing">Marketing</option>
+              <option value="product">Product</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="roleSelect">Rôle</label>
+          <div class="select-wrap">
+            <select id="roleSelect">
+              <option value="">— Domaine d'abord —</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Niveau</label>
+        <div class="level-pills">
+          <div class="pill active" onclick="setLevel(this)">Débutant</div>
+          <div class="pill" onclick="setLevel(this)">Intermédiaire</div>
+          <div class="pill" onclick="setLevel(this)">Senior</div>
+          <div class="pill" onclick="setLevel(this)">Lead</div>
+        </div>
+      </div>
+
+      <button class="btn" onclick="launch()">Lancer l'entretien</button>
+
+      <div class="divider"><span>Simulation guidée</span></div>
+
+      <div class="card-footer">
+        Vos réponses et votre session seront sauvegardées localement pendant l'entretien.
+      </div>
     </main>
-    
-    <footer>
-        <p>&copy; 2026 HireMe AI. All rights reserved.</p>
-    </footer>
-    
-    <script src="script.js"></script>
+
+    <aside class="side-right">
+      <div class="feature-item">
+        <span class="icon">✦</span>
+        <h4>Questions adaptées</h4>
+        <p>Le niveau et le rôle déterminent la difficulté des questions.</p>
+      </div>
+      <div class="feature-item">
+        <span class="icon">⟡</span>
+        <h4>Feedback instantané</h4>
+        <p>Chaque réponse reçoit une évaluation claire et utile.</p>
+      </div>
+      <div class="feature-item">
+        <span class="icon">◎</span>
+        <h4>Rapport final</h4>
+        <p>Un récapitulatif vous attend à la fin de la session.</p>
+      </div>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

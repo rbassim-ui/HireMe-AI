@@ -1,80 +1,56 @@
-/**
- * Main JavaScript file for HireMe AI frontend
- * Handles DOM interactions, API communication, and page navigation
- */
+const rolesMap = {
+  tech:      ['Développeur Frontend','Développeur Backend','Fullstack','DevOps / SRE','Mobile (iOS/Android)','Architecte logiciel'],
+  design:    ['UX Designer','UI Designer','Product Designer','Motion Designer','Brand Designer'],
+  data:      ['Data Analyst','Data Scientist','ML Engineer','Data Engineer','BI Developer'],
+  finance:   ['Analyste financier','Contrôleur de gestion','Consultant','Auditeur','CFO / DAF'],
+  marketing: ['Growth Hacker','Content Strategist','SEO Manager','Performance Manager','CMO'],
+  product:   ['Product Manager','Product Owner','Chief Product Officer','Agile Coach'],
+};
 
-// TODO: Initialize application on page load
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('HireMe AI application initialized');
-    
-    // Attach event listeners to buttons
-    const startBtn = document.getElementById('start-btn');
-    const resultsBtn = document.getElementById('results-btn');
-    const submitBtn = document.getElementById('submit-btn');
-    const homeBtn = document.getElementById('home-btn');
-    
-    if (startBtn) {
-        startBtn.addEventListener('click', startInterview);
-    }
-    
-    if (resultsBtn) {
-        resultsBtn.addEventListener('click', viewResults);
-    }
-    
-    if (submitBtn) {
-        submitBtn.addEventListener('click', submitAnswer);
-    }
-    
-    if (homeBtn) {
-        homeBtn.addEventListener('click', goHome);
-    }
-});
-
-/**
- * Start a new interview session
- * TODO: Make API call to backend to start interview
- */
-function startInterview() {
-    console.log('Starting interview...');
-    // TODO: Redirect to interview.html or load interview content
-    window.location.href = 'interview.html';
+function updateRoles() {
+  const domain = document.getElementById('domainSelect').value;
+  const sel = document.getElementById('roleSelect');
+  sel.innerHTML = '';
+  if (!domain) {
+    sel.innerHTML = "<option value=''>— Domaine d'abord —</option>";
+    return;
+  }
+  rolesMap[domain].forEach(r => {
+    const o = document.createElement('option');
+    o.textContent = r;
+    o.value = r;
+    sel.appendChild(o);
+  });
 }
 
-/**
- * Submit user's answer to a question
- * TODO: Validate answer, send to backend for evaluation
- */
-function submitAnswer() {
-    const answer = document.getElementById('answer');
-    console.log('Submitting answer:', answer.value);
-    // TODO: Send answer to backend API
-    // TODO: Display feedback
+function setLevel(el) {
+  document.querySelectorAll('.level-pills .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
 }
 
-/**
- * View interview results
- * TODO: Fetch results from backend and display
- */
-function viewResults() {
-    console.log('Viewing results...');
-    // TODO: Redirect to result.html or load results content
-    window.location.href = 'result.html';
+function launch() {
+  const name   = document.getElementById('nameInput').value.trim();
+  const domain = document.getElementById('domainSelect').value;
+  const role   = document.getElementById('roleSelect').value;
+  const level  = document.querySelector('.level-pills .pill.active')?.textContent || 'Débutant';
+
+  if (!name || !domain || !role) { shake(); return; }
+
+  localStorage.setItem('hireme_session', JSON.stringify({
+    name,
+    domain,
+    role,
+    level,
+    startedAt: new Date().toISOString(),
+  }));
+
+  window.location.href = 'interview.html';
 }
 
-/**
- * Navigate back to home page
- */
-function goHome() {
-    console.log('Going home...');
-    window.location.href = 'index.html';
-}
-
-/**
- * Fetch data from the backend API
- * TODO: Implement API calls to backend
- */
-function fetchFromAPI(endpoint, method = 'GET', data = null) {
-    // TODO: Make fetch request to backend
-    // TODO: Handle response and errors
-    console.log(`API call: ${method} ${endpoint}`);
+function shake() {
+  const card = document.querySelector('.card');
+  card.style.transform = 'translateX(-6px)';
+  setTimeout(() => card.style.transform = 'translateX(6px)', 80);
+  setTimeout(() => card.style.transform = 'translateX(-4px)', 160);
+  setTimeout(() => card.style.transform = 'translateX(0)', 240);
 }
