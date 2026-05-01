@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build HireMe C backend",
+      "type": "shell",
+      "command": "gcc",
+      "args": [
+        "-o",
+        "hireme.exe",
+        "main.c",
+        "db.c",
+        "sqlite3.c",
+        "-lws2_32",
+        "-D_WIN32_WINNT=0x0600"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/backend-c"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "showReuseMessage": false,
+        "close": true
+      }
+    }
+  ]
+}

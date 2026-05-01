@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch HireMe",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend-c/hireme.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/backend-c",
+      "environment": [],
+      "externalConsole": false,
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build HireMe C backend",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "logging": { "engineLogging": false }
+    }
+  ]
+}
