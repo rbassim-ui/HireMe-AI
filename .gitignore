@@ -1,0 +1,9 @@
+# Ignore build outputs
+backend-c/output/
+
+# VS Code
+.vscode/
+
+# OS files
+Thumbs.db
+Desktop.ini
