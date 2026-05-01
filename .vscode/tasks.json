@@ -7,12 +7,20 @@
       "command": "gcc",
       "args": [
         "-o",
-        "hireme.exe",
+        "output/hireme.exe",
         "main.c",
         "db.c",
+        "api.c",
+        "menu.c",
+        "interview.c",
+        "json.c",
+        "report.c",
+        "utils.c",
         "sqlite3.c",
         "-lws2_32",
-        "-D_WIN32_WINNT=0x0600"
+        "-D_WIN32_WINNT=0x0600",
+        "-std=c11",
+        "-Wall"
       ],
       "options": {
         "cwd": "${workspaceFolder}/backend-c"

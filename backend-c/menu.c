@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <windows.h>
 
 void afficher_menu() {
     printf("\n");
@@ -18,7 +19,12 @@ void lancer_menu() {
 
     while (1) {
         afficher_menu();
-        scanf("%d", &choix);
+        if (scanf("%d", &choix) != 1) {
+            clearerr(stdin);
+            printf("\nEntrée indisponible. Le serveur API reste actif...\n");
+            Sleep(1000);
+            continue;
+        }
 
         switch (choix) {
             case 1:

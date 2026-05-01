@@ -36,15 +36,32 @@ function launch() {
 
   if (!name || !domain || !role) { shake(); return; }
 
-  localStorage.setItem('hireme_session', JSON.stringify({
-    name,
-    domain,
-    role,
-    level,
-    startedAt: new Date().toISOString(),
-  }));
-
-  window.location.href = 'interview.html';
+  // Appeler l'API backend pour sauvegarder la session
+  const sessionData = { name, domain, role, level, startedAt: new Date().toISOString() };
+  
+  fetch('http://localhost:3000/api/session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(sessionData)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      // Sauvegarder aussi localement pour le frontend
+      localStorage.setItem('hireme_session', JSON.stringify({
+        session_id: data.session_id,
+        user_id: data.user_id,
+        name, domain, role, level
+      }));
+      window.location.href = 'interview.html';
+    } else {
+      alert('Erreur: ' + (data.message || 'Impossible de créer la session'));
+    }
+  })
+  .catch(err => {
+    console.error('Erreur API:', err);
+    alert('Erreur de connexion au serveur. Vérifiez que le backend est lancé sur port 3000.');
+  });
 }
 
 function shake() {
