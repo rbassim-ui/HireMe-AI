@@ -39,7 +39,7 @@ function launch() {
   // Appeler l'API backend pour sauvegarder la session
   const sessionData = { name, domain, role, level, startedAt: new Date().toISOString() };
   
-  fetch('http://localhost:3000/api/session', {
+  fetch('http://127.0.0.1:3000/api/session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(sessionData)
