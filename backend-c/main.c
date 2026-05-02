@@ -17,6 +17,8 @@ DWORD WINAPI api_thread_func(LPVOID param) {
 }
 
 int main() {
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
     printf("=== HireMe AI - Interview Simulator ===\n");
     
     db_init();
