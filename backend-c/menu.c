@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <windows.h>
 
+void start_interview();  // ← ajoute cette déclaration en haut
+
 void afficher_menu() {
     printf("\n");
     printf("=====================================\n");
@@ -29,7 +31,7 @@ void lancer_menu() {
         switch (choix) {
             case 1:
                 printf("\n>> Lancement de l'entretien...\n");
-                // TODO: appeler start_interview()
+                start_interview();  // ← remplace le TODO par ceci
                 break;
             case 2:
                 printf("\n>> Affichage de l'historique...\n");
