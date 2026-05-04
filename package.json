@@ -8,4 +8,12 @@
     "build": "echo 'Static site - no build needed'",
     "start": "python -m http.server 8000 --directory frontend"
   }
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "serverless": "^2.0.0"
+  }
 }
