@@ -44,11 +44,6 @@ function launch() {
   });
   
   window.location.href = 'interview.html';
-  })
-  .catch(err => {
-    console.error('Erreur API:', err);
-    alert('Erreur de connexion au serveur. Vérifiez que le backend est lancé sur port 3000.');
-  });
 }
 
 function shake() {
