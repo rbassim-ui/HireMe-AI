@@ -154,10 +154,10 @@ body.auth-page {
 .auth-topbar .brand .brand-name span { color: var(--auth-gold); }
 
 /* Input icon helper */
-.input-wrap { position: relative; }
+.input-wrap { position: relative; display: block; }
 .input-icon {
   position: absolute;
-  left: 12px;
+  left: 16px;
   top: 50%;
   transform: translateY(-50%);
   width: 20px;
@@ -166,10 +166,14 @@ body.auth-page {
   place-items: center;
   color: var(--auth-muted);
   pointer-events: none;
+  background: transparent;
 }
-.auth-input.input-with-icon {
-  padding-left: 44px;
-}
+.input-icon svg { display: block; width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.4; }
+.auth-input.input-with-icon { padding-left: 52px; }
+
+/* Prevent input background from creating visible inset shapes around absolute icon */
+.auth-input { background-clip: padding-box; }
+.input-wrap { overflow: visible; }
 
 /* Quick start button that sends candidate to the main form */
 .auth-quick {
