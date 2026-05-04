@@ -248,6 +248,14 @@ body.auth-page {
   font-weight: 500;
 }
 
+.auth-button,
+.auth-mini-button,
+button {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 .auth-link:hover,
 .auth-button:hover,
 .auth-mini-button:hover {
@@ -483,6 +491,7 @@ body.auth-page {
   border-radius: 26px;
   background: var(--auth-surface);
   padding: 22px;
+  overflow: hidden;
 }
 
 .account-actions-section {
@@ -492,6 +501,7 @@ body.auth-page {
 .account-settings-section {
   display: grid;
   gap: 14px;
+  padding: 0 16px;
 }
 
 .auth-form--compact {
