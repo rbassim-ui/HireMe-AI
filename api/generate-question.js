@@ -1,5 +1,4 @@
-export default async function handler(req, res) {
-  // CORS headers
+async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -17,17 +16,14 @@ export default async function handler(req, res) {
     const apiKey = process.env.GROQ_API_KEY;
 
     if (!apiKey) {
-      console.error('GROQ_API_KEY not configured');
       return res.status(500).json({ success: false, error: 'API key not configured' });
     }
 
     if (!domain || !role || !level) {
-      return res.status(400).json({ success: false, error: 'Missing: domain, role, level' });
+      return res.status(400).json({ success: false, error: 'Missing fields' });
     }
 
-    const prompt = `Generate ONE interview question for a ${level} level ${role} in ${domain}. Be professional and clear. Return ONLY the question, no explanation.`;
-
-    const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
@@ -35,37 +31,20 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 200,
-        temperature: 0.7
+        messages: [{ role: 'user', content: `Generate ONE interview question for ${level} level ${role} in ${domain}.` }],
+        max_tokens: 200
       })
     });
 
-    if (!groqResponse.ok) {
-      const error = await groqResponse.json();
-      throw new Error(`Groq API: ${error.error?.message || 'Unknown error'}`);
-    }
-
-    const data = await groqResponse.json();
+    if (!response.ok) throw new Error('Groq API error');
+    
+    const data = await response.json();
     const question = data.choices?.[0]?.message?.content?.trim();
 
-    if (!question) {
-      throw new Error('No content in Groq response');
-    }
-
-    return res.status(200).json({
-      success: true,
-      question,
-      domain,
-      role,
-      level
-    });
-
+    return res.json({ success: true, question, domain, role, level });
   } catch (error) {
-    console.error('generate-question error:', error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message || 'Failed to generate question'
-    });
+    return res.status(500).json({ success: false, error: error.message });
   }
 }
+
+module.exports = handler;

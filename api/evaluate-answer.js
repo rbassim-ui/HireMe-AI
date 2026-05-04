@@ -1,5 +1,4 @@
-export default async function handler(req, res) {
-  // CORS headers
+async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -13,26 +12,18 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { question, answer, level, domain } = req.body;
+    const { question, answer, level } = req.body;
     const apiKey = process.env.GROQ_API_KEY;
 
     if (!apiKey) {
-      console.error('GROQ_API_KEY not configured');
       return res.status(500).json({ success: false, error: 'API key not configured' });
     }
 
     if (!question || !answer) {
-      return res.status(400).json({ success: false, error: 'Missing: question, answer' });
+      return res.status(400).json({ success: false, error: 'Missing fields' });
     }
 
-    const prompt = `Evaluate this interview answer on a scale of 1-10.
-Question: ${question}
-Answer: ${answer}
-
-Reply ONLY with valid JSON (no markdown):
-{"score": 7, "feedback": "Good answer because...", "strengths": ["point1"], "improvements": ["point1"]}`;
-
-    const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
@@ -40,49 +31,30 @@ Reply ONLY with valid JSON (no markdown):
       },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 300,
-        temperature: 0.5
+        messages: [{ role: 'user', content: `Evaluate this interview answer on 1-10 scale. Question: ${question} Answer: ${answer} Reply with JSON: {"score": X, "feedback": "...", "strengths": [], "improvements": []}` }],
+        max_tokens: 300
       })
     });
 
-    if (!groqResponse.ok) {
-      const error = await groqResponse.json();
-      throw new Error(`Groq API: ${error.error?.message || 'Unknown error'}`);
-    }
-
-    const data = await groqResponse.json();
-    let responseText = data.choices?.[0]?.message?.content?.trim();
-
-    if (!responseText) {
-      throw new Error('No content in Groq response');
-    }
-
-    // Extract JSON if wrapped in markdown
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      responseText = jsonMatch[0];
-    }
-
-    const evaluation = JSON.parse(responseText);
+    if (!response.ok) throw new Error('Groq API error');
     
-    // Validate and normalize score
-    let score = Number(evaluation.score) || 6;
-    score = Math.max(1, Math.min(10, score));
+    const data = await response.json();
+    let content = data.choices?.[0]?.message?.content?.trim();
+    
+    // Extract JSON if wrapped in markdown
+    const jsonMatch = content?.match(/\{[\s\S]*\}/);
+    const evaluation = JSON.parse(jsonMatch?.[0] || content);
 
-    return res.status(200).json({
-      success: true,
-      score,
+    return res.json({ 
+      success: true, 
+      score: Math.max(1, Math.min(10, evaluation.score || 6)),
       feedback: evaluation.feedback || 'Good response',
-      strengths: Array.isArray(evaluation.strengths) ? evaluation.strengths : ['Clear answer'],
-      improvements: Array.isArray(evaluation.improvements) ? evaluation.improvements : ['More detail']
+      strengths: evaluation.strengths || ['Clear'],
+      improvements: evaluation.improvements || ['Expand']
     });
-
   } catch (error) {
-    console.error('evaluate-answer error:', error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message || 'Failed to evaluate answer'
-    });
+    return res.status(500).json({ success: false, error: error.message });
   }
 }
+
+module.exports = handler;
