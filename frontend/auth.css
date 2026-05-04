@@ -153,6 +153,43 @@ body.auth-page {
 
 .auth-topbar .brand .brand-name span { color: var(--auth-gold); }
 
+/* Input icon helper */
+.input-wrap { position: relative; }
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--auth-muted);
+  pointer-events: none;
+}
+.auth-input.input-with-icon {
+  padding-left: 44px;
+}
+
+/* Quick start button that sends candidate to the main form */
+.auth-quick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--auth-border);
+  color: var(--auth-text);
+  text-decoration: none;
+}
+.auth-quick svg { width: 18px; height: 18px; }
+
+@media (max-width: 720px) {
+  .auth-quick { width: 40px; height: 40px; }
+}
+
 .auth-widget {
   display: inline-flex;
   align-items: center;

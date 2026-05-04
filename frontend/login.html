@@ -35,6 +35,12 @@
           </div>
           <div class="brand-name">Hire<span>Me</span> AI</div>
         </a>
+        <a href="index.html" class="auth-quick" aria-label="Nouvel entretien" title="Nouvel entretien">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2v20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M5 9l7-7 7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
         <div class="auth-widget" id="authWidget"></div>
       </div>
 
@@ -48,12 +54,18 @@
           <p>Un nouveau profil personnel avec historique séparé.</p>
           <form id="registerForm" class="auth-form">
             <div class="auth-field">
-              <label for="registerName">Nom d'utilisateur</label>
-                <input id="registerName" class="auth-input" type="text" placeholder="Ex. makram" autocomplete="username" required />
-            </div>
+                <label for="registerName">Nom d'utilisateur</label>
+                <div class="input-wrap">
+                  <span class="input-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <input id="registerName" class="auth-input input-with-icon" type="text" placeholder="Ex. makram" autocomplete="username" required />
+                </div>
+              </div>
             <div class="auth-field">
               <label for="registerPassword">Mot de passe</label>
-              <input id="registerPassword" class="auth-input" type="password" placeholder="Choisissez un mot de passe" autocomplete="new-password" required />
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <input id="registerPassword" class="auth-input input-with-icon" type="password" placeholder="Choisissez un mot de passe" autocomplete="new-password" required />
+              </div>
             </div>
             <button class="auth-mini-button" type="submit">Créer le compte</button>
           </form>
@@ -65,11 +77,17 @@
           <form id="loginForm" class="auth-form">
             <div class="auth-field">
               <label for="loginName">Nom d'utilisateur</label>
-              <input id="loginName" class="auth-input" type="text" placeholder="Votre identifiant" autocomplete="username" required autofocus />
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <input id="loginName" class="auth-input input-with-icon" type="text" placeholder="Votre identifiant" autocomplete="username" required autofocus />
+              </div>
             </div>
             <div class="auth-field">
               <label for="loginPassword">Mot de passe</label>
-              <input id="loginPassword" class="auth-input" type="password" placeholder="Votre mot de passe" autocomplete="current-password" required />
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M7 11V8a5 5 0 0 1 10 0v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <input id="loginPassword" class="auth-input input-with-icon" type="password" placeholder="Votre mot de passe" autocomplete="current-password" required />
+              </div>
             </div>
             <button class="auth-mini-button" type="submit">Se connecter</button>
           </form>
