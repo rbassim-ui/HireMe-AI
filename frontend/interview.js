@@ -229,14 +229,8 @@ async function loadQuestion(index) {
   `;
 
   const el = document.getElementById('questionText');
-  el.textContent = '';
-  el.classList.add('typing');
-  let i = 0;
-  const speed = Math.max(18, 40 - q.length * 0.1);
-  const typer = setInterval(() => {
-    el.textContent += q[i++];
-    if (i >= q.length) { clearInterval(typer); el.classList.remove('typing'); }
-  }, speed);
+  el.textContent = q;
+  el.classList.remove('typing');
 
   document.getElementById('answerInput').value = '';
   document.getElementById('charCount').textContent = '0 / 2000 caractères';
