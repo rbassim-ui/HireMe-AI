@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireMe AI — Connexion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body class="auth-page">
+  <div class="auth-bg"></div>
+  <div class="auth-grid"></div>
+
+  <div class="auth-shell">
+    <section class="auth-hero">
+      <div class="auth-kicker">HireMe AI</div>
+      <h1>Votre compte, votre historique.</h1>
+      <p class="auth-lead">Créez un profil personnel pour retrouver vos scores, vos sessions et votre progression depuis n'importe quel entretien.</p>
+      <div class="auth-points">
+        <div class="auth-point">Historique privé<span>Chaque session est liée à votre compte pour éviter les mélanges entre utilisateurs.</span></div>
+        <div class="auth-point">Scores persistants<span>Les scores et badges restent attachés à votre profil, même après redémarrage du backend.</span></div>
+        <div class="auth-point">Gestion rapide<span>Connexion, modification du nom, changement de mot de passe et suppression du compte.</span></div>
+      </div>
+    </section>
+
+    <section class="auth-card">
+      <div class="auth-topbar">
+        <a href="index.html" class="brand" aria-label="HireMe AI — page d'accueil">
+          <div class="brand-icon">
+            <svg viewBox="0 0 18 18" fill="none">
+              <circle cx="9" cy="9" r="7" stroke="#0a0b0d" stroke-width="1.5" />
+              <path d="M6 9l2 2 4-4" stroke="#0a0b0d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="brand-name">Hire<span>Me</span> AI</div>
+        </a>
+        <div class="auth-widget" id="authWidget"></div>
+      </div>
+
+      <div class="auth-banner">Créez un compte ou connectez-vous pour retrouver votre espace personnel.</div>
+      <h2 class="auth-title">Connexion & création de compte</h2>
+      <p class="auth-subtitle">Choisissez un identifiant simple et un mot de passe pour activer votre espace privé.</p>
+
+      <div class="auth-grid-panels">
+        <div class="auth-panel">
+          <h2>Créer un compte</h2>
+          <p>Un nouveau profil personnel avec historique séparé.</p>
+          <form id="registerForm" class="auth-form">
+            <div class="auth-field">
+              <label for="registerName">Nom d'utilisateur</label>
+                <input id="registerName" class="auth-input" type="text" placeholder="Ex. makram" autocomplete="username" required />
+            </div>
+            <div class="auth-field">
+              <label for="registerPassword">Mot de passe</label>
+              <input id="registerPassword" class="auth-input" type="password" placeholder="Choisissez un mot de passe" autocomplete="new-password" required />
+            </div>
+            <button class="auth-mini-button" type="submit">Créer le compte</button>
+          </form>
+        </div>
+
+        <div class="auth-panel">
+          <h2>Se connecter</h2>
+          <p>Accédez à vos sessions existantes et à votre dashboard personnel.</p>
+          <form id="loginForm" class="auth-form">
+            <div class="auth-field">
+              <label for="loginName">Nom d'utilisateur</label>
+              <input id="loginName" class="auth-input" type="text" placeholder="Votre identifiant" autocomplete="username" required autofocus />
+            </div>
+            <div class="auth-field">
+              <label for="loginPassword">Mot de passe</label>
+              <input id="loginPassword" class="auth-input" type="password" placeholder="Votre mot de passe" autocomplete="current-password" required />
+            </div>
+            <button class="auth-mini-button" type="submit">Se connecter</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="auth-divider">Actions rapides</div>
+      <div class="auth-actions">
+        <a class="auth-link" href="index.html">Retour à l'accueil</a>
+        <a class="auth-link" href="dashboard.html">Dashboard global</a>
+        <a class="auth-link" href="result.html">Rapport final</a>
+      </div>
+
+      <div class="auth-error" id="authError"></div>
+      <div class="auth-success" id="authSuccess"></div>
+    </section>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>

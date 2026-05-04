@@ -4,9 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HireMe AI — Démarrer l'entretien</title>
+  <meta name="description" content="HireMe AI — préparez et simulez vos entretiens techniques avec des sessions personnalisées." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <!-- Redirect to login/register if the user is not authenticated -->
+  <script>
+    (function(){
+      try {
+        var user = localStorage.getItem('hireme_user') || localStorage.getItem('authUser');
+        if (!user) {
+          location.replace('login.html');
+        }
+      } catch (e) {
+        // Fallback to unconditional redirect if storage access fails
+        location.replace('login.html');
+      }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="auth.css" />
 </head>
 <body>
   <div class="bg-layer"></div>
@@ -25,7 +42,7 @@
     </aside>
 
     <main class="card">
-      <a href="index.html" class="brand">
+      <a href="index.html" class="brand" aria-label="HireMe AI — page d'accueil">
         <div class="brand-icon">
           <svg viewBox="0 0 18 18" fill="none">
             <circle cx="9" cy="9" r="7" stroke="#0a0b0d" stroke-width="1.5" />
@@ -34,6 +51,8 @@
         </div>
         <div class="brand-name">Hire<span>Me</span> AI</div>
       </a>
+
+      <div class="auth-widget" id="authWidget"></div>
 
       <h1 class="card-title">Préparez votre entretien</h1>
       <p class="card-sub">Commencez par quelques informations pour générer une session ciblée.</p>
@@ -45,27 +64,13 @@
 
       <div class="fields-row">
         <div class="field">
-          <label for="domainSelect">Domaine</label>
-          <div class="select-wrap">
-            <select id="domainSelect" onchange="updateRoles()">
-              <option value="">— Choisissez un domaine —</option>
-              <option value="tech">Tech</option>
-              <option value="design">Design</option>
-              <option value="data">Data</option>
-              <option value="finance">Finance</option>
-              <option value="marketing">Marketing</option>
-              <option value="product">Product</option>
-            </select>
-          </div>
+          <label for="domainInput">Domaine</label>
+          <input id="domainInput" type="text" placeholder="Ex. Tech, Marketing, Design..." autocomplete="off" />
         </div>
 
         <div class="field">
-          <label for="roleSelect">Rôle</label>
-          <div class="select-wrap">
-            <select id="roleSelect">
-              <option value="">— Domaine d'abord —</option>
-            </select>
-          </div>
+          <label for="roleInput">Rôle</label>
+          <input id="roleInput" type="text" placeholder="Ex. Développeur, Manager..." autocomplete="off" />
         </div>
       </div>
 
@@ -107,6 +112,7 @@
     </aside>
   </div>
 
+  <script src="auth.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

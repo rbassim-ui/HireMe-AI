@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireMe AI — Mon compte</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body class="auth-page">
+  <div class="auth-bg"></div>
+  <div class="auth-grid"></div>
+
+  <div class="auth-shell" style="grid-template-columns: 1fr; max-width: 1240px; margin: 0 auto;">
+    <section class="auth-card" style="justify-self: stretch; max-width: none;">
+      <div class="auth-topbar">
+        <a href="index.html" class="brand" aria-label="HireMe AI — page d'accueil">
+          <div class="brand-icon">
+            <svg viewBox="0 0 18 18" fill="none">
+              <circle cx="9" cy="9" r="7" stroke="#0a0b0d" stroke-width="1.5" />
+              <path d="M6 9l2 2 4-4" stroke="#0a0b0d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="brand-name">Hire<span>Me</span> AI</div>
+        </a>
+        <div class="auth-widget" id="authWidget"></div>
+      </div>
+
+      <div class="auth-banner">Espace personnel. Vos sessions, scores et paramètres sont rattachés à ce compte.</div>
+      <h1 class="auth-title" id="accountName">Mon compte</h1>
+      <p class="auth-subtitle" id="accountSubtitle">Chargement du profil en cours…</p>
+
+      <div class="account-layout">
+        <div class="account-panel">
+          <h2>Vue d'ensemble</h2>
+          <p>Suivez vos performances et vos dernières sessions.</p>
+          <div class="summary-grid" id="summaryGrid">
+            <div class="account-stat"><span class="value">—</span><span class="label">Sessions</span></div>
+            <div class="account-stat"><span class="value">—</span><span class="label">Moyenne</span></div>
+            <div class="account-stat"><span class="value">—</span><span class="label">Meilleur score</span></div>
+          </div>
+
+          <div class="auth-divider">Historique récent</div>
+          <div class="account-table" id="historyTable">
+            <div class="account-empty">Chargement de l'historique…</div>
+          </div>
+        </div>
+
+        <aside class="account-sidebar">
+          <h2>Gestion du compte</h2>
+          <p>Modifier les informations, changer le mot de passe ou supprimer le profil.</p>
+
+          <form id="updateNameForm" class="auth-form">
+            <div class="auth-field">
+              <label for="accountNameInput">Nom d'utilisateur</label>
+              <input id="accountNameInput" class="auth-input" type="text" placeholder="Nouveau nom" />
+            </div>
+            <button class="auth-mini-button" type="submit">Mettre à jour le nom</button>
+          </form>
+
+          <form id="passwordForm" class="auth-form">
+            <div class="auth-field">
+              <label for="accountPasswordInput">Nouveau mot de passe</label>
+              <input id="accountPasswordInput" class="auth-input" type="password" placeholder="Nouveau mot de passe" />
+            </div>
+            <button class="auth-mini-button" type="submit">Changer le mot de passe</button>
+          </form>
+
+          <div class="auth-actions">
+            <a href="dashboard.html" class="auth-link">Dashboard global</a>
+            <a href="index.html" class="auth-link">Nouvel entretien</a>
+            <a href="history.html" class="auth-link">Historique complet</a>
+          </div>
+
+          <button type="button" class="auth-mini-button auth-button--ghost account-danger" id="deleteAccountBtn">Supprimer le compte</button>
+        </aside>
+      </div>
+
+      <div class="auth-error" id="accountError"></div>
+      <div class="auth-success" id="accountSuccess"></div>
+    </section>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="account.js"></script>
+</body>
+</html>
