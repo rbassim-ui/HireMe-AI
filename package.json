@@ -7,7 +7,7 @@
     "dev": "python -m http.server 8000 --directory frontend",
     "build": "echo 'Static site - no build needed'",
     "start": "python -m http.server 8000 --directory frontend"
-  }
+  },
   "main": "index.js",
   "dependencies": {
     "express": "^4.17.1"
