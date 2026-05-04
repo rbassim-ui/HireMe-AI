@@ -79,14 +79,14 @@
       <div class="field">
         <label>Niveau</label>
         <div class="level-pills">
-          <div class="pill active" onclick="setLevel(this)">Débutant</div>
-          <div class="pill" onclick="setLevel(this)">Intermédiaire</div>
-          <div class="pill" onclick="setLevel(this)">Senior</div>
-          <div class="pill" onclick="setLevel(this)">Lead</div>
+          <div class="pill active" onclick="if(typeof setLevel==='function')setLevel(this)">Débutant</div>
+          <div class="pill" onclick="if(typeof setLevel==='function')setLevel(this)">Intermédiaire</div>
+          <div class="pill" onclick="if(typeof setLevel==='function')setLevel(this)">Senior</div>
+          <div class="pill" onclick="if(typeof setLevel==='function')setLevel(this)">Lead</div>
         </div>
       </div>
 
-      <button class="btn" onclick="launch()">Lancer l'entretien</button>
+      <button class="btn" onclick="if(typeof launch==='function')launch()">Lancer l'entretien</button>
 
       <div class="divider"><span>Simulation guidée</span></div>
 
