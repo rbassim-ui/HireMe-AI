@@ -8,12 +8,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="auth.css" />
 </head>
-<body class="auth-page">
+<body class="auth-page account-page">
   <div class="auth-bg"></div>
   <div class="auth-grid"></div>
 
-  <div class="auth-shell" style="grid-template-columns: 1fr; max-width: 1240px; margin: 0 auto;">
-    <section class="auth-card" style="justify-self: stretch; max-width: none;">
+  <div class="auth-shell account-shell">
+    <section class="auth-card account-card">
       <div class="auth-topbar">
         <a href="index.html" class="brand" aria-label="HireMe AI — page d'accueil">
           <div class="brand-icon">
@@ -27,14 +27,32 @@
         <div class="auth-widget" id="authWidget"></div>
       </div>
 
-      <div class="auth-banner">Espace personnel. Vos sessions, scores et paramètres sont rattachés à ce compte.</div>
-      <h1 class="auth-title" id="accountName">Mon compte</h1>
-      <p class="auth-subtitle" id="accountSubtitle">Chargement du profil en cours…</p>
+      <div class="account-hero">
+        <div>
+          <div class="account-eyebrow">Account Overview</div>
+          <h1 class="auth-title" id="accountName">Mon compte</h1>
+          <p class="auth-subtitle" id="accountSubtitle">Chargement du profil en cours…</p>
+        </div>
+        <div class="account-banner">
+          <span class="account-banner-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </span>
+          <div>Espace personnel. Vos sessions, scores et paramètres sont rattachés à ce compte.</div>
+        </div>
+      </div>
 
       <div class="account-layout">
         <div class="account-panel">
-          <h2>Vue d'ensemble</h2>
-          <p>Suivez vos performances et vos dernières sessions.</p>
+          <div class="section-header">
+            <span class="section-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M7 16V9m5 7V5m5 14v-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </span>
+            <div>
+              <p class="section-kicker">Statistics</p>
+              <h2>Vue d'ensemble</h2>
+            </div>
+          </div>
+          <p class="section-copy">Suivez vos performances et vos dernières sessions.</p>
           <div class="summary-grid" id="summaryGrid">
             <div class="account-stat"><span class="value">—</span><span class="label">Sessions</span></div>
             <div class="account-stat"><span class="value">—</span><span class="label">Moyenne</span></div>
@@ -48,33 +66,69 @@
         </div>
 
         <aside class="account-sidebar">
-          <h2>Gestion du compte</h2>
-          <p>Modifier les informations, changer le mot de passe ou supprimer le profil.</p>
-
-          <form id="updateNameForm" class="auth-form">
-            <div class="auth-field">
-              <label for="accountNameInput">Nom d'utilisateur</label>
-              <input id="accountNameInput" class="auth-input" type="text" placeholder="Nouveau nom" />
+          <section class="account-section account-actions-section">
+            <div class="section-header">
+              <span class="section-icon section-icon--gold">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+              </span>
+              <div>
+                <p class="section-kicker">Actions</p>
+                <h2>Navigation rapide</h2>
+              </div>
             </div>
-            <button class="auth-mini-button" type="submit">Mettre à jour le nom</button>
-          </form>
+            <p class="section-copy">Accès direct aux principales pages de travail.</p>
 
-          <form id="passwordForm" class="auth-form">
-            <div class="auth-field">
-              <label for="accountPasswordInput">Nouveau mot de passe</label>
-              <input id="accountPasswordInput" class="auth-input" type="password" placeholder="Nouveau mot de passe" />
+            <div class="action-stack action-stack--account">
+              <a href="index.html?skipAuth=1" class="action-button action-button--primary">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+                Commencer un entretien
+              </a>
+              <a href="dashboard.html" class="action-button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 16V8m6 8V4m6 16v-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                Dashboard global
+              </a>
+              <a href="index.html" class="action-button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+                Nouvel entretien
+              </a>
+              <a href="history.html" class="action-button">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v4l3 2M21 12a9 9 0 1 1-3.3-7M21 4v5h-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                Historique complet
+              </a>
             </div>
-            <button class="auth-mini-button" type="submit">Changer le mot de passe</button>
-          </form>
+          </section>
 
-          <div class="auth-actions">
-            <a href="index.html?skipAuth=1" class="auth-link auth-button" style="font-weight:700;">Commencer un entretien</a>
-            <a href="dashboard.html" class="auth-link">Dashboard global</a>
-            <a href="index.html" class="auth-link">Nouvel entretien</a>
-            <a href="history.html" class="auth-link">Historique complet</a>
-          </div>
+          <section class="account-section account-settings-section">
+            <div class="section-header">
+              <span class="section-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </span>
+              <div>
+                <p class="section-kicker">Account Settings</p>
+                <h2>Gestion du compte</h2>
+              </div>
+            </div>
+            <p class="section-copy">Modifier les informations, changer le mot de passe ou supprimer le profil.</p>
 
-          <button type="button" class="auth-mini-button auth-button--ghost account-danger" id="deleteAccountBtn">Supprimer le compte</button>
+            <form id="updateNameForm" class="auth-form auth-form--compact">
+              <div class="auth-field">
+                <label for="accountNameInput">Nom d'utilisateur</label>
+                <input id="accountNameInput" class="auth-input" type="text" placeholder="Nouveau nom" />
+              </div>
+              <button class="auth-mini-button" type="submit">Mettre à jour le nom</button>
+            </form>
+
+            <form id="passwordForm" class="auth-form auth-form--compact">
+              <div class="auth-field">
+                <label for="accountPasswordInput">Nouveau mot de passe</label>
+                <input id="accountPasswordInput" class="auth-input" type="password" placeholder="Nouveau mot de passe" />
+              </div>
+              <button class="auth-mini-button" type="submit">Changer le mot de passe</button>
+            </form>
+
+            <button type="button" class="auth-mini-button auth-button--ghost account-danger account-danger--full" id="deleteAccountBtn">Supprimer le compte</button>
+          </section>
+
         </aside>
       </div>
 
