@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireMe AI — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body class="dashboard-page">
+  <div class="bg-layer"></div>
+  <div class="bg-grid"></div>
+
+  <div class="dashboard-shell">
+    <header class="dashboard-topbar">
+      <a href="index.html" class="brand" aria-label="HireMe AI — page d'accueil">
+        <div class="brand-icon">
+          <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.5" />
+            <path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div class="brand-name">Hire<span>Me</span> AI</div>
+      </a>
+
+      <div class="dashboard-nav">
+        <a href="result.html" class="nav-link">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 16V8m6 8V4m6 16v-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          Rapport final
+        </a>
+        <a href="index.html" class="nav-button nav-button--primary">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+          Nouvel entretien
+        </a>
+      </div>
+    </header>
+
+    <section class="dashboard-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Jour 15 · Dashboard</p>
+        <h1>Vue globale de la performance des entretiens</h1>
+        <p class="lead">Les indicateurs agrègent les sessions sauvegardées dans SQLite via l’API REST.</p>
+      </div>
+
+      <div class="hero-metrics" id="heroMetrics">
+        <div class="metric-card metric-card--skeleton"></div>
+        <div class="metric-card metric-card--skeleton"></div>
+        <div class="metric-card metric-card--skeleton"></div>
+        <div class="metric-card metric-card--skeleton"></div>
+      </div>
+    </section>
+
+    <main class="dashboard-grid">
+      <section class="panel panel-statistics">
+        <div class="panel-head">
+          <div class="panel-title-wrap">
+            <span class="panel-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M7 17V9M12 17V5M17 17v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </span>
+            <div>
+              <p class="panel-kicker">Statistics</p>
+              <h2>Domaines les plus performants</h2>
+            </div>
+          </div>
+          <span class="panel-chip" id="bestDomainChip">Chargement…</span>
+        </div>
+
+        <div class="stats-grid">
+          <article class="panel-subcard panel-subcard--ranking">
+            <div class="subcard-head">
+              <div class="subcard-heading">
+                <span class="subcard-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l2 2 4-4M8 20l-4-4 4-4M16 20l4-4-4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </span>
+                <div>
+                  <p class="subcard-kicker">Classement</p>
+                  <h3>Répartition des scores</h3>
+                </div>
+              </div>
+              <div class="arc-inline">
+                <div class="arc-value" id="avgScoreText">—</div>
+                <div class="arc-label">Score moyen</div>
+              </div>
+            </div>
+            <div class="summary-note summary-note--compact" id="summaryNote">Connexion à SQLite en cours…</div>
+          </article>
+
+          <article class="panel-subcard panel-subcard--list">
+            <div class="subcard-head subcard-head--stacked">
+              <div class="subcard-heading">
+                <span class="subcard-icon subcard-icon--gold">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.6 5.6 6.1.5-4.6 4 1.4 6L12 15.9 6.5 18l1.4-6-4.6-4 6.1-.5L12 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" /></svg>
+                </span>
+                <div>
+                  <p class="subcard-kicker">Performance</p>
+                  <h3>Liste des domaines</h3>
+                </div>
+              </div>
+              <p class="subcard-description">Suivi du volume de sessions, du score moyen et du meilleur score par domaine.</p>
+            </div>
+            <div class="domain-list" id="domainList">
+              <div class="domain-item domain-item--skeleton"></div>
+              <div class="domain-item domain-item--skeleton"></div>
+              <div class="domain-item domain-item--skeleton"></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <aside class="dashboard-sidebar">
+        <section class="panel panel-actions">
+          <div class="panel-head">
+            <div class="panel-title-wrap">
+              <span class="panel-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+              </span>
+              <div>
+                <p class="panel-kicker">Actions</p>
+                <h2>Navigation rapide</h2>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-stack">
+            <a href="index.html" class="action-button action-button--primary">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+              Commencer un entretien
+            </a>
+            <a href="dashboard.html" class="action-button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 16V8m6 8V4m6 16v-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              Dashboard global
+            </a>
+            <a href="result.html" class="action-button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 16h2V10H7zm4 0h2V6h-2zm4 0h2v-4h-2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              Rapport final
+            </a>
+            <a href="history.html" class="action-button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8v4l3 2M21 12a9 9 0 1 1-3.3-7M21 4v5h-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              Historique complet
+            </a>
+          </div>
+        </section>
+
+        <section class="panel panel-account">
+          <div class="panel-head">
+            <div class="panel-title-wrap">
+              <span class="panel-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </span>
+              <div>
+                <p class="panel-kicker">Account Settings</p>
+                <h2>Compte et sécurité</h2>
+              </div>
+            </div>
+          </div>
+
+          <div class="account-summary">
+            <p class="account-summary-label">Session active</p>
+            <div class="auth-widget auth-widget--dashboard" id="authWidget"></div>
+          </div>
+
+          <div class="account-note">
+            Gérez le nom d’utilisateur et le mot de passe depuis la page compte, ou déconnectez-vous si besoin.
+          </div>
+
+          <div class="account-links">
+            <a href="account.html" class="action-button action-button--ghost">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              Ouvrir mon compte
+            </a>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
