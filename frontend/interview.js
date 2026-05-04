@@ -4,7 +4,8 @@
 
 const session = JSON.parse(localStorage.getItem('hireme_session') || '{}');
 const TOTAL_Q = 5;
-const API_URL = typeof process !== 'undefined' && process.env?.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://127.0.0.1:3000';
+// Use relative paths for Vercel serverless functions (works on any domain)
+const API_URL = '';
 const DEMO_MODE = true; // Use local questions bank if API unavailable
 
 let currentQ = 0;
@@ -108,24 +109,23 @@ function getQuestions() {
 // Récupérer une question via API Groq (avec fallback)
 async function fetchQuestion(index) {
   try {
-    const response = await fetch(`${API_URL}/api/question`, {
+    const response = await fetch('/api/generate-question', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         domain: session.domain || 'Tech',
         role: session.role || 'Général',
-        level: session.level || 'Débutant',
-        question_num: index + 1
+        level: session.level || 'Débutant'
       })
     });
 
     const data = await response.json().catch(() => ({}));
     if (!response.ok || !data.success || !data.question) {
-      throw new Error(data.message || 'Generation de question IA indisponible');
+      throw new Error(data.error || 'Generation de question IA indisponible');
     }
     return data.question;
   } catch (err) {
-    console.warn('API indisponible, utilisation des questions locales');
+    console.warn('API indisponible, utilisation des questions locales:', err.message);
     // Use local questions bank as fallback
     return getLocalQuestion(index);
   }
@@ -144,27 +144,27 @@ function getLocalQuestion(index) {
 async function evaluateAnswer(question, answer) {
   const trimmedAnswer = (answer || '').trim();
   try {
-    const response = await fetch(`${API_URL}/api/evaluate`, {
+    const response = await fetch('/api/evaluate-answer', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         question: question,
         answer: trimmedAnswer,
-        level: session.level || 'Débutant'
+        level: session.level || 'Débutant',
+        domain: session.domain || 'Tech'
       })
     });
 
     const data = await response.json().catch(() => ({}));
-    if (!response.ok || !data.success || !data.evaluation) {
-      throw new Error(data.message || 'Evaluation IA indisponible');
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || 'Evaluation IA indisponible');
     }
 
-    const match = data.evaluation.match(/SCORE:\s*(\d+)/i);
-    const score = match ? Math.max(0, Math.min(10, parseInt(match[1], 10))) : 0;
-    const feedback = data.evaluation.replace(/SCORE:\s*\d+\/10\s*\|\s*FEEDBACK:\s*/i, '').trim();
-    return { score, feedback: feedback || 'Evaluation IA recue.' };
+    const score = Math.max(0, Math.min(10, data.score || 0));
+    const feedback = data.feedback || 'Evaluation IA recue.';
+    return { score, feedback };
   } catch (err) {
-    console.warn('API evaluation indisponible, utilisation scoring local');
+    console.warn('API evaluation indisponible, utilisation scoring local:', err.message);
     // Fallback: Score based on answer length and content
     const score = Math.min(10, Math.max(1, Math.floor(trimmedAnswer.length / 20)));
     const feedback = trimmedAnswer.length > 50 ? 'Réponse détaillée et constructive.' : 'Réponse brève - développez davantage.';
