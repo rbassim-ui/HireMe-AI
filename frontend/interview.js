@@ -4,7 +4,7 @@
 
 const session = JSON.parse(localStorage.getItem('hireme_session') || '{}');
 const TOTAL_Q = 5;
-const API_URL = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://127.0.0.1:3000';
+const API_URL = typeof process !== 'undefined' && process.env?.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://127.0.0.1:3000';
 const DEMO_MODE = true; // Use local questions bank if API unavailable
 
 let currentQ = 0;
