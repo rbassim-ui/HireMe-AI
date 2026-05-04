@@ -1,10 +1,4 @@
 {
   "version": 2,
-  "buildCommand": "echo 'Static build'",
-  "outputDirectory": "frontend",
-  "framework": "vanilla",
-  "regions": ["sfo1"],
-  "env": {
-    "VERCEL_URL": "@vercel-url"
-  }
+  "outputDirectory": "frontend"
 }
