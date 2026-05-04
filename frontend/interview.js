@@ -170,6 +170,7 @@ async function evaluateAnswer(question, answer) {
     const feedback = trimmedAnswer.length > 50 ? 'Réponse détaillée et constructive.' : 'Réponse brève - développez davantage.';
     return { score, feedback };
   }
+}
 
 let questions = [];
 
