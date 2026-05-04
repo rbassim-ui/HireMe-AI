@@ -1,0 +1,11 @@
+{
+  "name": "hireme-ai-frontend",
+  "version": "1.0.0",
+  "description": "HireMe AI - Frontend for interview simulation",
+  "private": true,
+  "scripts": {
+    "dev": "python -m http.server 8000 --directory frontend",
+    "build": "echo 'Static site - no build needed'",
+    "start": "python -m http.server 8000 --directory frontend"
+  }
+}

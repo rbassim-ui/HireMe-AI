@@ -6,6 +6,9 @@
 # Ignore top-level output/ if present
 output/
 
+# Local environment files
+.env
+
 # VS Code
 .vscode/
 
