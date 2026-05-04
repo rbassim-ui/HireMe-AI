@@ -87,7 +87,7 @@ async function loadDashboard() {
 
     heroMetrics.innerHTML = [
       renderMetric('Sessions totales', totalSessions, 'Toutes les sessions finalisées enregistrées'),
-      renderMetric('Score moyen', formatScore(avgScore), 'Moyenne globale des sessions scorées', true),
+      renderMetric('Score moyen', formatScore(avgScore), 'Moyenne globale des sessions scorées'),
       renderMetric('Meilleur score', `${formatScore(bestScore)}/10`, 'Pic de performance observé'),
       renderMetric('Meilleur domaine', bestDomain, `${bestDomainSessions} session${bestDomainSessions > 1 ? 's' : ''} • moyenne ${formatScore(bestDomainAvg)}/10`)
     ].join('');
@@ -103,7 +103,7 @@ async function loadDashboard() {
   } catch (err) {
     heroMetrics.innerHTML = [
       renderMetric('Sessions totales', '—', 'API REST indisponible'),
-      renderMetric('Score moyen', '—', 'Chargement des statistiques impossible', true),
+      renderMetric('Score moyen', '—', 'Chargement des statistiques impossible'),
       renderMetric('Meilleur score', '—', 'Aucune donnée chargée'),
       renderMetric('Meilleur domaine', '—', 'Connexion à l’API échouée')
     ].join('');
