@@ -66,6 +66,16 @@ function renderAuthWidget() {
     return;
   }
 
+  // Don't render a redundant login button on auth pages (login/account)
+  try {
+    const path = location.pathname.split('/').pop();
+    const isAuthPage = path === 'login.html' || path === 'account.html' || document.body.classList.contains('auth-page');
+    if (isAuthPage) {
+      target.innerHTML = '';
+      return;
+    }
+  } catch (e) {}
+
   target.innerHTML = `
     <a href="login.html" class="auth-button">Login</a>
   `;

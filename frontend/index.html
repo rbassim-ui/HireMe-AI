@@ -11,7 +11,9 @@
     (function(){
       try {
         var user = localStorage.getItem('hireme_user') || localStorage.getItem('authUser');
-        if (!user) {
+        var params = new URLSearchParams(location.search);
+        var skip = params.has('skipAuth');
+        if (!user && !skip) {
           location.replace('login.html');
         }
       } catch (e) {
