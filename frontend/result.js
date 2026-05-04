@@ -89,6 +89,7 @@ function render() {
   `;
 
   document.getElementById('actions').innerHTML = `
+    <a href="dashboard.html" class="btn-secondary">Voir le dashboard</a>
     <a href="index.html" class="btn-primary">Recommencer →</a>
     <button class="btn-secondary" onclick="window.print()">Exporter PDF</button>
   `;

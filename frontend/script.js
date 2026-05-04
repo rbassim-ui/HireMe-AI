@@ -1,43 +1,34 @@
-const rolesMap = {
-  tech:      ['Développeur Frontend','Développeur Backend','Fullstack','DevOps / SRE','Mobile (iOS/Android)','Architecte logiciel'],
-  design:    ['UX Designer','UI Designer','Product Designer','Motion Designer','Brand Designer'],
-  data:      ['Data Analyst','Data Scientist','ML Engineer','Data Engineer','BI Developer'],
-  finance:   ['Analyste financier','Contrôleur de gestion','Consultant','Auditeur','CFO / DAF'],
-  marketing: ['Growth Hacker','Content Strategist','SEO Manager','Performance Manager','CMO'],
-  product:   ['Product Manager','Product Owner','Chief Product Officer','Agile Coach'],
-};
-
-function updateRoles() {
-  const domain = document.getElementById('domainSelect').value;
-  const sel = document.getElementById('roleSelect');
-  sel.innerHTML = '';
-  if (!domain) {
-    sel.innerHTML = "<option value=''>— Domaine d'abord —</option>";
-    return;
-  }
-  rolesMap[domain].forEach(r => {
-    const o = document.createElement('option');
-    o.textContent = r;
-    o.value = r;
-    sel.appendChild(o);
-  });
-}
-
 function setLevel(el) {
   document.querySelectorAll('.level-pills .pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
 }
 
+const currentUser = window.HireMeAuth?.getCurrentUser?.() || null;
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (!currentUser) return;
+  const nameInput = document.getElementById('nameInput');
+  if (nameInput) {
+    nameInput.value = currentUser.name || '';
+    nameInput.readOnly = true;
+    nameInput.placeholder = 'Compte connecté';
+  }
+});
+
 function launch() {
-  const name   = document.getElementById('nameInput').value.trim();
-  const domain = document.getElementById('domainSelect').value;
-  const role   = document.getElementById('roleSelect').value;
+  const nameInput = document.getElementById('nameInput');
+  const name   = (currentUser?.name || nameInput.value).trim();
+  const domain = document.getElementById('domainInput').value.trim();
+  const role   = document.getElementById('roleInput').value.trim();
   const level  = document.querySelector('.level-pills .pill.active')?.textContent || 'Débutant';
 
   if (!name || !domain || !role) { shake(); return; }
 
   // Appeler l'API backend pour sauvegarder la session
   const sessionData = { name, domain, role, level, startedAt: new Date().toISOString() };
+  if (currentUser?.user_id) {
+    sessionData.user_id = currentUser.user_id;
+  }
   
   fetch('http://127.0.0.1:3000/api/session', {
     method: 'POST',
