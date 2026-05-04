@@ -1,4 +1,4 @@
-const API_URL = 'http://127.0.0.1:3000';
+const API_URL = '';
 
 function formatDomain(domain) {
   if (!domain) return 'Non défini';
@@ -73,7 +73,7 @@ async function loadDashboard() {
   const summaryNote = document.getElementById('summaryNote');
 
   try {
-    const response = await fetch(`${API_URL}/api/stats`);
+    const response = await fetch('/api/stats');
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
     const data = await response.json();
