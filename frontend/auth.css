@@ -248,18 +248,18 @@ body.auth-page {
   font-weight: 500;
 }
 
-.auth-button,
-.auth-mini-button,
-button {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
 .auth-link:hover,
 .auth-button:hover,
 .auth-mini-button:hover {
   transform: translateY(-1px);
+}
+
+/* Account page button width fixes */
+.account-section button,
+.account-section .auth-mini-button {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .auth-banner {
