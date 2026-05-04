@@ -1,0 +1,10 @@
+backend-c/
+docs/
+.env
+Makefile
+run-hireme.bat
+run-hireme.ps1
+.gitignore
+.git/
+.vscode/
+output/

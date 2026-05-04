@@ -24,30 +24,26 @@ function launch() {
 
   if (!name || !domain || !role) { shake(); return; }
 
-  // Appeler l'API backend pour sauvegarder la session
-  const sessionData = { name, domain, role, level, startedAt: new Date().toISOString() };
-  if (currentUser?.user_id) {
-    sessionData.user_id = currentUser.user_id;
-  }
+  // Sauvegarder localement pour le frontend
+  const sessionData = { 
+    session_id: Math.random().toString(36).substring(7),
+    user_id: currentUser?.user_id,
+    name, domain, role, level, 
+    startedAt: new Date().toISOString()
+  };
   
+  localStorage.setItem('hireme_session', JSON.stringify(sessionData));
+  
+  // Appel API optionnel - ne pas bloquer si indisponible
   fetch('http://127.0.0.1:3000/api/session', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(sessionData)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      // Sauvegarder aussi localement pour le frontend
-      localStorage.setItem('hireme_session', JSON.stringify({
-        session_id: data.session_id,
-        user_id: data.user_id,
-        name, domain, role, level
-      }));
-      window.location.href = 'interview.html';
-    } else {
-      alert('Erreur: ' + (data.message || 'Impossible de créer la session'));
-    }
+  }).catch(() => {
+    console.warn('API session indisponible, session sauvegardée localement');
+  });
+  
+  window.location.href = 'interview.html';
   })
   .catch(err => {
     console.error('Erreur API:', err);

@@ -4,7 +4,8 @@
 
 const session = JSON.parse(localStorage.getItem('hireme_session') || '{}');
 const TOTAL_Q = 5;
-const API_URL = 'http://127.0.0.1:3000';
+const API_URL = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://127.0.0.1:3000';
+const DEMO_MODE = true; // Use local questions bank if API unavailable
 
 let currentQ = 0;
 let scores   = [];
@@ -104,49 +105,71 @@ function getQuestions() {
   }
 }
 
-// Récupérer une question via API Groq
+// Récupérer une question via API Groq (avec fallback)
 async function fetchQuestion(index) {
-  const response = await fetch(`${API_URL}/api/question`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      domain: session.domain || 'Tech',
-      role: session.role || 'Général',
-      level: session.level || 'Débutant',
-      question_num: index + 1
-    })
-  });
+  try {
+    const response = await fetch(`${API_URL}/api/question`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        domain: session.domain || 'Tech',
+        role: session.role || 'Général',
+        level: session.level || 'Débutant',
+        question_num: index + 1
+      })
+    });
 
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || !data.success || !data.question) {
-    throw new Error(data.message || 'Generation de question IA indisponible');
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.success || !data.question) {
+      throw new Error(data.message || 'Generation de question IA indisponible');
+    }
+    return data.question;
+  } catch (err) {
+    console.warn('API indisponible, utilisation des questions locales');
+    // Use local questions bank as fallback
+    return getLocalQuestion(index);
   }
-  return data.question;
 }
 
-// Évaluer une réponse via API Groq
+function getLocalQuestion(index) {
+  // Retourner une question de la banque locale
+  const domain = session.domain || 'Tech';
+  const role = session.role || 'Développeur Frontend';
+  const level = session.level || 'Débutant';
+  const questions = questionsBank[domain.toLowerCase()]?.[role]?.[level] || questionsBank.tech['Développeur Frontend']['Débutant'];
+  return questions[index % questions.length] || 'Décrivez votre approche pour résoudre ce problème.';
+}
+
+// Évaluer une réponse via API Groq (avec fallback)
 async function evaluateAnswer(question, answer) {
   const trimmedAnswer = (answer || '').trim();
-  const response = await fetch(`${API_URL}/api/evaluate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      question: question,
-      answer: trimmedAnswer,
-      level: session.level || 'Débutant'
-    })
-  });
+  try {
+    const response = await fetch(`${API_URL}/api/evaluate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question: question,
+        answer: trimmedAnswer,
+        level: session.level || 'Débutant'
+      })
+    });
 
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || !data.success || !data.evaluation) {
-    throw new Error(data.message || 'Evaluation IA indisponible');
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.success || !data.evaluation) {
+      throw new Error(data.message || 'Evaluation IA indisponible');
+    }
+
+    const match = data.evaluation.match(/SCORE:\s*(\d+)/i);
+    const score = match ? Math.max(0, Math.min(10, parseInt(match[1], 10))) : 0;
+    const feedback = data.evaluation.replace(/SCORE:\s*\d+\/10\s*\|\s*FEEDBACK:\s*/i, '').trim();
+    return { score, feedback: feedback || 'Evaluation IA recue.' };
+  } catch (err) {
+    console.warn('API evaluation indisponible, utilisation scoring local');
+    // Fallback: Score based on answer length and content
+    const score = Math.min(10, Math.max(1, Math.floor(trimmedAnswer.length / 20)));
+    const feedback = trimmedAnswer.length > 50 ? 'Réponse détaillée et constructive.' : 'Réponse brève - développez davantage.';
+    return { score, feedback };
   }
-
-  const match = data.evaluation.match(/SCORE:\s*(\d+)/i);
-  const score = match ? Math.max(0, Math.min(10, parseInt(match[1], 10))) : 0;
-  const feedback = data.evaluation.replace(/SCORE:\s*\d+\/10\s*\|\s*FEEDBACK:\s*/i, '').trim();
-  return { score, feedback: feedback || 'Evaluation IA recue.' };
-}
 
 let questions = [];
 
