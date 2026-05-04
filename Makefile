@@ -16,6 +16,7 @@ SOURCES = $(SRC_DIR)/main.c \
           $(SRC_DIR)/menu.c \
           $(SRC_DIR)/interview.c \
           $(SRC_DIR)/api.c \
+		  $(SRC_DIR)/gemini.c \
           $(SRC_DIR)/db.c \
           $(SRC_DIR)/json.c \
           $(SRC_DIR)/report.c \

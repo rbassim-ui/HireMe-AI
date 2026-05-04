@@ -60,6 +60,8 @@ body.dashboard-page {
   color: var(--dash-text);
 }
 
+.brand-icon svg { width: 22px; height: 22px; }
+
 .dashboard-nav .nav-link,
 .dashboard-nav .nav-button,
 .action-button {
@@ -96,10 +98,12 @@ body.dashboard-page {
 .dashboard-nav .nav-link svg,
 .dashboard-nav .nav-button svg,
 .action-button svg {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   flex: 0 0 auto;
 }
+
+.action-button svg { margin-right: 10px; }
 
 .dashboard-nav .nav-link:hover,
 .dashboard-nav .nav-button:hover,
@@ -150,28 +154,28 @@ body.dashboard-page {
   gap: 14px;
 }
 
-.metric-card {
-  position: relative;
-  overflow: hidden;
-  min-height: 176px;
-  padding: 22px;
-  border-radius: 24px;
+metric-icon,
+panel-icon,
+subcard-icon,
+domain-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--dash-gold);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--dash-border);
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)),
-    var(--dash-surface-2);
-  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.18);
-  display: grid;
-  align-content: start;
-  gap: 10px;
-  transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+  flex: 0 0 auto;
 }
 
-.metric-card:hover,
-.panel:hover,
-.panel-subcard:hover {
-  transform: translateY(-2px);
-  border-color: rgba(212, 177, 107, 0.16);
+metric-icon svg,
+panel-icon svg,
+subcard-icon svg,
+domain-badge svg {
+  width: 20px;
+  height: 20px;
+}
 }
 
 .metric-icon,
@@ -249,7 +253,7 @@ body.dashboard-page {
 
 .panel {
   border: 1px solid var(--dash-border);
-  border-radius: 30px;
+  border-radius: 18px;
   background: var(--dash-surface);
   box-shadow: var(--dash-shadow);
   transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
@@ -261,7 +265,7 @@ body.dashboard-page {
 
 .panel-actions,
 .panel-account {
-  padding: 24px;
+  padding: 20px;
 }
 
 .panel-account {
@@ -270,10 +274,10 @@ body.dashboard-page {
 
 .panel-head {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .panel-title-wrap,
@@ -310,18 +314,18 @@ body.dashboard-page {
   font-size: 0.8rem;
 }
 
-.stats-grid {
+stats-grid {
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-columns: 0.95fr 1.05fr;
   gap: 14px;
 }
 
 .panel-subcard {
   border: 1px solid var(--dash-border);
-  border-radius: 26px;
+  border-radius: 14px;
   background: var(--dash-surface-2);
-  padding: 20px;
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.16);
+  padding: 18px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
 }
 
 .subcard-head {
@@ -451,19 +455,50 @@ body.dashboard-page {
   gap: 12px;
 }
 
+/* Prevent oversized decorative SVGs in the sidebar panels */
+.dashboard-sidebar svg {
+  width: 20px !important;
+  height: 20px !important;
+  display: inline-block !important;
+  vertical-align: middle;
+}
+
+/* Ensure panel icons stay consistent and small */
+.panel-icon svg,
+.subcard-icon svg,
+.metric-icon svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Make sure large SVG placeholders (if any) inside action cards are hidden */
+.panel.panel-actions svg:not(.panel-icon):not(.action-button svg) {
+  max-width: 0; max-height: 0; overflow: hidden; opacity: 0;
+}
+
 .action-button {
   width: 100%;
+  display: inline-flex;
+  align-items: center;
   justify-content: flex-start;
-  padding: 14px 16px;
-  border-radius: 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
   font-weight: 600;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--dash-text);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--dash-border);
 }
 
 .action-button--primary {
-  padding: 16px 18px;
+  padding: 14px 16px;
   min-height: 56px;
-  font-size: 0.98rem;
-  box-shadow: 0 16px 30px rgba(212, 177, 107, 0.2);
+  font-size: 1rem;
+  box-shadow: 0 14px 28px rgba(212, 177, 107, 0.18);
+  color: #111318;
+  background: linear-gradient(180deg, #e0c177, #d4b16b);
+  border-color: transparent;
 }
 
 .action-button--ghost {
@@ -473,12 +508,12 @@ body.dashboard-page {
 
 .account-summary {
   display: grid;
-  gap: 10px;
-  padding: 16px;
-  border-radius: 22px;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 12px;
   border: 1px solid var(--dash-border);
   background: rgba(255, 255, 255, 0.02);
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .account-summary-label {
