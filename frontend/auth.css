@@ -239,6 +239,9 @@ body.auth-page {
   color: #0b0c0f;
   border-color: transparent;
   font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
 }
 
 .auth-button--ghost {
