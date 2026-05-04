@@ -175,6 +175,19 @@ body.auth-page {
 .auth-input { background-clip: padding-box; }
 .input-wrap { overflow: visible; }
 
+/* Constrain input widths inside auth panels to avoid overly long fields */
+.auth-grid-panels .auth-panel .input-wrap,
+.auth-card .auth-field .input-wrap,
+.auth-panel .input-wrap {
+  max-width: 460px;
+  margin-right: auto;
+}
+
+/* Slightly reduce radius for tighter panels */
+.auth-panel .auth-input {
+  border-radius: 12px;
+}
+
 /* Quick start button that sends candidate to the main form */
 .auth-quick {
   display: inline-flex;
