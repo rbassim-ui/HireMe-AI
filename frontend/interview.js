@@ -112,10 +112,10 @@ async function fetchQuestion(index) {
     // Get previously asked questions to avoid repetition
     const askedQuestions = JSON.parse(sessionStorage.getItem('hireme_asked_questions') || '[]');
     
-    // Add retry logic for question diversity
+    // Add retry logic for question diversity with stricter duplicate detection
     let question = null;
     let retries = 0;
-    const maxRetries = 2;
+    const maxRetries = 3;
     
     while (!question && retries <= maxRetries) {
       const response = await fetch('/api/generate-question', {
@@ -133,19 +133,27 @@ async function fetchQuestion(index) {
 
       const data = await response.json().catch(() => ({}));
       if (response.ok && data.success && data.question) {
-        // Check if question is too similar to previous ones
+        // Stricter duplicate detection - check for key phrases/concepts
         const questionLower = data.question.toLowerCase();
         const isDuplicate = askedQuestions.some(q => {
           const qLower = q.toLowerCase();
-          const commonWords = questionLower.split(/\s+/).filter(word => 
-            word.length > 4 && qLower.includes(word)
-          ).length;
-          return commonWords > 3;
+          
+          // Extract key concepts (words > 3 chars)
+          const qWords = qLower.match(/\b\w{4,}\b/g) || [];
+          const newWords = questionLower.match(/\b\w{4,}\b/g) || [];
+          
+          // Count matching words
+          const matchCount = newWords.filter(w => qWords.includes(w)).length;
+          
+          // If more than 30% of words match, consider it duplicate
+          const matchRatio = matchCount / Math.max(qWords.length, newWords.length);
+          return matchRatio > 0.3 || matchCount > 4;
         });
         
         if (!isDuplicate) {
           question = data.question;
         } else if (retries < maxRetries) {
+          console.log(`Question too similar to previous (${retries+1}/${maxRetries}), retrying...`);
           retries++;
           continue;
         } else {

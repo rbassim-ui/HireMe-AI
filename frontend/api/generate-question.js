@@ -65,7 +65,14 @@ async function handler(req, res) {
       ? askedQuestions.map((q, i) => `Q${i+1}: ${q.substring(0, 80)}`).join('\n')
       : '';
     
-    const promptText = `You MUST generate a COMPLETELY DIFFERENT interview question.\n\nGenerate ONE technical interview question for a ${level} level ${role} in ${domain}.\nFocus area: ${selectedTopic}\n\n${previousQuestionsList ? `QUESTIONS ALREADY ASKED (DO NOT REPEAT THESE TOPICS OR CONCEPTS):\n${previousQuestionsList}\n\n` : ''}STRICT REQUIREMENTS:\n- Generate a question on COMPLETELY DIFFERENT topic than above\n- Do NOT ask about architecture patterns already covered\n- Do NOT repeat similar concepts\n- Make it specific and practical\n- Return ONLY the question text (no preamble, no explanation)\n- If you would ask same topic as above, pick something completely unrelated instead`;
+    const promptText = `CRITICAL: Generate a UNIQUE interview question that is COMPLETELY DIFFERENT from previous ones.
+
+Role: ${level} level ${role} in ${domain}
+Focus Topic: ${selectedTopic}
+
+${previousQuestionsList ? `PREVIOUS QUESTIONS (ABSOLUTELY DO NOT REPEAT THESE):\n${previousQuestionsList}\n\nYou MUST NOT generate any question about:\n- GET/POST/HTTP methods (already asked)\n- Monolithic vs Microservices (already asked)\n- MVC patterns (already asked)\n- REST vs GraphQL (already asked)\n` : ''}
+
+INSTRUCTIONS:\n- Generate ONE question about ${selectedTopic} that is DIFFERENT from all above\n- Use completely different keywords and phrasing\n- Ask a new angle or scenario\n- Make it specific and practical\n- Return ONLY the question text (no explanations, no commentary)\n- If you recognize a topic above, pick a completely unrelated topic from: database indexing, caching strategies, transaction handling, concurrency control, load balancing, monitoring, logging, error handling, rate limiting\n`;
     
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
