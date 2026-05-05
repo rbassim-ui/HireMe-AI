@@ -6,6 +6,10 @@
 # Ignore top-level output/ if present
 output/
 
+# Node modules
+node_modules/
+*/node_modules/
+
 # Local environment files
 .env
 
