@@ -109,13 +109,19 @@ function getQuestions() {
 // Récupérer une question via API Groq (avec fallback)
 async function fetchQuestion(index) {
   try {
+    // Get previously asked questions to avoid repetition
+    const askedQuestions = JSON.parse(sessionStorage.getItem('hireme_asked_questions') || '[]');
+    
     const response = await fetch('/api/generate-question', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         domain: session.domain || 'Tech',
         role: session.role || 'Général',
-        level: session.level || 'Débutant'
+        level: session.level || 'Débutant',
+        index: index,
+        askedQuestions: askedQuestions,
+        totalQuestions: TOTAL_Q
       })
     });
 
@@ -123,6 +129,11 @@ async function fetchQuestion(index) {
     if (!response.ok || !data.success || !data.question) {
       throw new Error(data.error || 'Generation de question IA indisponible');
     }
+    
+    // Track this question to avoid future repetition
+    askedQuestions.push(data.question);
+    sessionStorage.setItem('hireme_asked_questions', JSON.stringify(askedQuestions));
+    
     return data.question;
   } catch (err) {
     console.warn('API indisponible, utilisation des questions locales:', err.message);
@@ -178,6 +189,9 @@ function init() {
   document.getElementById('displayName').textContent  = session.name  || 'Candidat';
   document.getElementById('displayRole').textContent  = session.role  || '—';
   document.getElementById('displayLevel').textContent = session.level || '—';
+
+  // Initialize question tracking for this session
+  sessionStorage.setItem('hireme_asked_questions', JSON.stringify([]));
 
   const dots = document.getElementById('progressDots');
   for (let i = 0; i < TOTAL_Q; i++) {
