@@ -23,7 +23,7 @@ async function handler(req, res) {
       return res.status(400).json({ success: false, error: 'Missing fields' });
     }
 
-    // Build prompt with diversity instruction and previous questions context
+    // Build prompt with strict diversity instruction and previous questions context
     const askedQuestions = req.body.askedQuestions || [];
     const index = req.body.index || 0;
     const totalQuestions = req.body.totalQuestions || 5;
@@ -43,15 +43,29 @@ async function handler(req, res) {
       'Error handling and logging',
       'Caching strategies',
       'Concurrency and async programming',
-      'Monitoring and observability'
+      'Monitoring and observability',
+      'Design patterns',
+      'Data structures',
+      'API versioning',
+      'Load balancing',
+      'Disaster recovery'
     ];
     
-    const selectedTopic = topics[index % topics.length];
-    const previousContext = askedQuestions.length > 0 
-      ? `\n\nIMPORTANT: DO NOT ask these topics again - they were already asked:\n${askedQuestions.map((q, i) => `${i+1}. ${q.substring(0, 100)}...`).join('\n')}`
+    let selectedTopic = topics[index % topics.length];
+    if (askedQuestions.length > 0) {
+      const prevText = askedQuestions.join(' ').toLowerCase();
+      let attempts = 0;
+      while (prevText.includes(selectedTopic.toLowerCase()) && attempts < 5) {
+        selectedTopic = topics[(index + attempts + 1) % topics.length];
+        attempts++;
+      }
+    }
+    
+    const previousQuestionsList = askedQuestions.length > 0
+      ? askedQuestions.map((q, i) => `Q${i+1}: ${q.substring(0, 80)}`).join('\n')
       : '';
     
-    const promptText = `Generate ONE unique, specific interview question for a ${level} level ${role} in ${domain}.\n\nTopic focus: ${selectedTopic}\n\nRequirements:\n- Question must be DIFFERENT from any topic/concept already covered${previousContext}\n- Make it practical and scenario-based\n- Avoid generic questions\n- Return ONLY the question text, no explanations`;
+    const promptText = `You MUST generate a COMPLETELY DIFFERENT interview question.\n\nGenerate ONE technical interview question for a ${level} level ${role} in ${domain}.\nFocus area: ${selectedTopic}\n\n${previousQuestionsList ? `QUESTIONS ALREADY ASKED (DO NOT REPEAT THESE TOPICS OR CONCEPTS):\n${previousQuestionsList}\n\n` : ''}STRICT REQUIREMENTS:\n- Generate a question on COMPLETELY DIFFERENT topic than above\n- Do NOT ask about architecture patterns already covered\n- Do NOT repeat similar concepts\n- Make it specific and practical\n- Return ONLY the question text (no preamble, no explanation)\n- If you would ask same topic as above, pick something completely unrelated instead`;
     
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',

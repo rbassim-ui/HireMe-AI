@@ -112,29 +112,63 @@ async function fetchQuestion(index) {
     // Get previously asked questions to avoid repetition
     const askedQuestions = JSON.parse(sessionStorage.getItem('hireme_asked_questions') || '[]');
     
-    const response = await fetch('/api/generate-question', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        domain: session.domain || 'Tech',
-        role: session.role || 'Général',
-        level: session.level || 'Débutant',
-        index: index,
-        askedQuestions: askedQuestions,
-        totalQuestions: TOTAL_Q
-      })
-    });
+    // Add retry logic for question diversity
+    let question = null;
+    let retries = 0;
+    const maxRetries = 2;
+    
+    while (!question && retries <= maxRetries) {
+      const response = await fetch('/api/generate-question', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          domain: session.domain || 'Tech',
+          role: session.role || 'Général',
+          level: session.level || 'Débutant',
+          index: index + retries,
+          askedQuestions: askedQuestions,
+          totalQuestions: TOTAL_Q
+        })
+      });
 
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok || !data.success || !data.question) {
-      throw new Error(data.error || 'Generation de question IA indisponible');
+      const data = await response.json().catch(() => ({}));
+      if (response.ok && data.success && data.question) {
+        // Check if question is too similar to previous ones
+        const questionLower = data.question.toLowerCase();
+        const isDuplicate = askedQuestions.some(q => {
+          const qLower = q.toLowerCase();
+          const commonWords = questionLower.split(/\s+/).filter(word => 
+            word.length > 4 && qLower.includes(word)
+          ).length;
+          return commonWords > 3;
+        });
+        
+        if (!isDuplicate) {
+          question = data.question;
+        } else if (retries < maxRetries) {
+          retries++;
+          continue;
+        } else {
+          question = data.question;
+        }
+      }
+      
+      if (retries < maxRetries && !question) {
+        retries++;
+      } else {
+        break;
+      }
+    }
+    
+    if (!question) {
+      throw new Error('Impossible de générer une question diversifiée');
     }
     
     // Track this question to avoid future repetition
-    askedQuestions.push(data.question);
+    askedQuestions.push(question);
     sessionStorage.setItem('hireme_asked_questions', JSON.stringify(askedQuestions));
     
-    return data.question;
+    return question;
   } catch (err) {
     console.warn('API indisponible, utilisation des questions locales:', err.message);
     // Use local questions bank as fallback
