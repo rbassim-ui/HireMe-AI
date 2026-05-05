@@ -112,10 +112,13 @@ async function fetchQuestion(index) {
     // Get previously asked questions to avoid repetition
     const askedQuestions = JSON.parse(sessionStorage.getItem('hireme_asked_questions') || '[]');
     
-    // Add retry logic for question diversity with stricter duplicate detection
+    // List of topics that commonly repeat - use as fallback trigger
+    const blockedTopics = ['GET and POST', 'monolithic', 'microservices', 'mvc', 'rest', 'graphql'];
+    
+    // Add retry logic for question diversity with hybrid Groq + local fallback
     let question = null;
     let retries = 0;
-    const maxRetries = 3;
+    const maxRetries = 2;
     
     while (!question && retries <= maxRetries) {
       const response = await fetch('/api/generate-question', {
@@ -133,8 +136,19 @@ async function fetchQuestion(index) {
 
       const data = await response.json().catch(() => ({}));
       if (response.ok && data.success && data.question) {
-        // Stricter duplicate detection - check for key phrases/concepts
         const questionLower = data.question.toLowerCase();
+        
+        // Check for exact topic violations (Groq ignored the explicit blocks)
+        const hasBlockedTopic = blockedTopics.some(topic => questionLower.includes(topic));
+        if (hasBlockedTopic && askedQuestions.some(q => q.toLowerCase().includes(topic))) {
+          console.log('Groq generated blocked topic, using fallback local question');
+          // Groq violated the constraint - use local bank
+          question = null;
+          retries++;
+          continue;
+        }
+        
+        // More aggressive duplicate detection
         const isDuplicate = askedQuestions.some(q => {
           const qLower = q.toLowerCase();
           
@@ -145,31 +159,38 @@ async function fetchQuestion(index) {
           // Count matching words
           const matchCount = newWords.filter(w => qWords.includes(w)).length;
           
-          // If more than 30% of words match, consider it duplicate
+          // If more than 25% of words match, consider it duplicate
           const matchRatio = matchCount / Math.max(qWords.length, newWords.length);
-          return matchRatio > 0.3 || matchCount > 4;
+          return matchRatio > 0.25 || matchCount > 5;
         });
         
         if (!isDuplicate) {
           question = data.question;
         } else if (retries < maxRetries) {
-          console.log(`Question too similar to previous (${retries+1}/${maxRetries}), retrying...`);
+          console.log(`Question too similar (${retries+1}/${maxRetries}), retrying...`);
           retries++;
           continue;
         } else {
-          question = data.question;
+          // Max retries reached with Groq - fallback to local
+          console.log('Max retries with Groq, using local question bank');
+          question = null;
+          break;
         }
-      }
-      
-      if (retries < maxRetries && !question) {
+      } else if (retries < maxRetries) {
         retries++;
       } else {
         break;
       }
     }
     
+    // If Groq failed or generated duplicates, use guaranteed local question
     if (!question) {
-      throw new Error('Impossible de générer une question diversifiée');
+      console.log('Falling back to local question bank for guaranteed diversity');
+      question = getLocalQuestion(index);
+    }
+    
+    if (!question) {
+      throw new Error('Impossible de générer une question');
     }
     
     // Track this question to avoid future repetition
