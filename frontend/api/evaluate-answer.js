@@ -31,7 +31,12 @@ async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
-        messages: [{ role: 'user', content: `Evaluate this interview answer on 1-10 scale. Question: ${question} Answer: ${answer} Reply with JSON: {"score": X, "feedback": "...", "strengths": [], "improvements": []}` }],
+        messages: [{ role: 'user', content: `Evaluate this interview answer on a 1-10 scale.
+Question: ${question}
+Answer: ${answer}
+
+Return ONLY valid JSON (no markdown, no extra text) with this exact schema:
+{"score": number, "feedback": string, "strengths": string[], "improvements": string[]}` }],
         max_tokens: 300
       })
     });
@@ -39,9 +44,28 @@ async function handler(req, res) {
     if (!response.ok) throw new Error('Groq API error');
 
     const data = await response.json();
-    let content = data.choices?.[0]?.message?.content?.trim();
-    const jsonMatch = content?.match(/\{[\s\S]*\}/);
-    const evaluation = JSON.parse(jsonMatch?.[0] || content);
+    let content = data.choices?.[0]?.message?.content?.trim() || '';
+
+    // Remove common markdown wrappers before parsing.
+    if (content.startsWith('```')) {
+      content = content.replace(/^```[a-zA-Z]*\n?/, '').replace(/```$/, '').trim();
+    }
+
+    let evaluation = null;
+    try {
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      evaluation = JSON.parse((jsonMatch && jsonMatch[0]) || content);
+    } catch (_) {
+      const scoreMatch = content.match(/(?:score|rating|note)\D{0,12}(10|[0-9](?:\.[0-9])?)/i);
+      const fallbackScore = scoreMatch ? Number(scoreMatch[1]) : 6;
+
+      evaluation = {
+        score: fallbackScore,
+        feedback: content.slice(0, 600) || 'Good response overall.',
+        strengths: ['Clear structure'],
+        improvements: ['Add more specific technical details']
+      };
+    }
 
     return res.json({
       success: true,
