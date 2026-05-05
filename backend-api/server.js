@@ -1,0 +1,160 @@
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
+const Database = require('better-sqlite3');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const DATA_DIR = path.join(__dirname, 'output');
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+const DB_PATH = path.join(DATA_DIR, 'hireme.db');
+
+const db = new Database(DB_PATH);
+db.pragma('foreign_keys = ON');
+
+function createTables() {
+  const sql = `
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    domain TEXT,
+    role TEXT,
+    level TEXT,
+    total_score REAL DEFAULT 0,
+    badge TEXT DEFAULT 'Pending',
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  );
+
+  CREATE TABLE IF NOT EXISTS answers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INTEGER,
+    question TEXT,
+    answer TEXT,
+    score INTEGER DEFAULT 0,
+    feedback TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(session_id) REFERENCES sessions(id)
+  );
+
+  CREATE TABLE IF NOT EXISTS scores (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INTEGER,
+    average_score REAL,
+    total_questions INTEGER,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(session_id) REFERENCES sessions(id)
+  );
+  `;
+  db.exec(sql);
+}
+
+createTables();
+
+// GET /api/session/:id
+app.get('/api/session/:id', (req, res) => {
+  const id = Number(req.params.id) || 0;
+  if (id <= 0) return res.status(400).json({});
+
+  const sql = `SELECT s.user_id, s.domain, s.role, s.level, s.total_score, s.badge, u.name
+    FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.id = ?`;
+  const row = db.prepare(sql).get(id);
+  if (!row) return res.json({});
+  res.json({
+    session_id: id,
+    user_id: row.user_id,
+    name: row.name || '',
+    domain: row.domain || '',
+    role: row.role || '',
+    level: row.level || '',
+    total_score: Number(row.total_score || 0),
+    badge: row.badge || ''
+  });
+});
+
+// POST /api/session
+app.post('/api/session', (req, res) => {
+  const { name, domain, role, level, startedAt, user_id } = req.body || {};
+  if (!name || !domain || !role) return res.status(400).json({ success: false, message: 'Missing required fields' });
+
+  let uid = Number(user_id) || 0;
+  try {
+    if (uid <= 0) {
+      const insertUser = db.prepare('INSERT INTO users (name, created_at) VALUES (?, CURRENT_TIMESTAMP)');
+      const info = insertUser.run(name);
+      uid = info.lastInsertRowid || info.lastInsertId || info.changes && info.changes > 0 ? info.lastInsertRowid : uid;
+    }
+
+    const insertSession = db.prepare('INSERT INTO sessions (user_id, domain, role, level) VALUES (?, ?, ?, ?)');
+    const info2 = insertSession.run(uid, domain, role, level || '');
+    const sessionId = info2.lastInsertRowid || info2.lastInsertId || 0;
+
+    res.json({ success: true, session_id: sessionId, user_id: uid, message: 'Session created' });
+  } catch (err) {
+    console.error('POST /api/session error', err);
+    res.status(500).json({ success: false, message: 'Unable to create session' });
+  }
+});
+
+// GET /api/sessions
+app.get('/api/sessions', (req, res) => {
+  const sql = `SELECT s.id, u.name, s.domain, s.role, s.level, s.total_score, s.badge, s.created_at
+    FROM sessions s JOIN users u ON s.user_id = u.id
+    ORDER BY s.created_at DESC LIMIT 20`;
+  const rows = db.prepare(sql).all();
+  const items = rows.map(r => ({
+    id: r.id,
+    name: r.name || '',
+    domain: r.domain || '',
+    role: r.role || '',
+    level: r.level || '',
+    score: Number(r.total_score || 0),
+    badge: r.badge || '',
+    date: r.created_at || ''
+  }));
+  res.json(items);
+});
+
+// GET /api/stats
+app.get('/api/stats', (req, res) => {
+  try {
+    const globalSql = `SELECT COUNT(*) as total_sessions, COALESCE(AVG(total_score),0) as avg_score, COALESCE(MAX(total_score),0) as best_score
+      FROM sessions WHERE total_score > 0`;
+    const g = db.prepare(globalSql).get();
+
+    const bestDomainSql = `SELECT domain, AVG(total_score) as avg_score, COUNT(*) as sessions
+      FROM sessions WHERE total_score > 0 AND domain IS NOT NULL AND domain != ''
+      GROUP BY domain ORDER BY avg_score DESC, sessions DESC LIMIT 1`;
+    const best = db.prepare(bestDomainSql).get() || { domain: '', avg_score: 0, sessions: 0 };
+
+    const domainsSql = `SELECT domain, AVG(total_score) as avg_score, COUNT(*) as sessions, MAX(total_score) as best_score
+      FROM sessions WHERE total_score > 0 AND domain IS NOT NULL AND domain != ''
+      GROUP BY domain ORDER BY avg_score DESC, sessions DESC LIMIT 5`;
+    const domains = db.prepare(domainsSql).all().map(r => ({ domain: r.domain, avg_score: Number(r.avg_score || 0), sessions: r.sessions, best_score: Number(r.best_score || 0) }));
+
+    res.json({
+      total_sessions: Number(g.total_sessions || 0),
+      avg_score: Number((g.avg_score || 0).toFixed(1)),
+      best_score: Number((g.best_score || 0).toFixed(1)),
+      best_domain: best.domain || '',
+      best_domain_avg: Number((best.avg_score || 0).toFixed(1)),
+      best_domain_sessions: best.sessions || 0,
+      domains
+    });
+  } catch (err) {
+    console.error('GET /api/stats error', err);
+    res.status(500).json({});
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`HireMe API listening on port ${PORT}`));

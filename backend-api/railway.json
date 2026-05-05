@@ -1,0 +1,7 @@
+{
+  "service": {
+    "name": "hireme-backend-api",
+    "startCommand": "node server.js",
+    "port": 3000
+  }
+}
