@@ -13,10 +13,10 @@ async function handler(req, res) {
 
   try {
     const { domain, role, level } = req.body;
-    const apiKey = process.env.GROQ_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY || process.env.GROK_API_KEY;
 
     if (!apiKey) {
-      return res.status(500).json({ success: false, error: 'API key not configured' });
+      return res.status(500).json({ success: false, error: 'API key not configured (expected GROQ_API_KEY or GROK_API_KEY)' });
     }
 
     if (!domain || !role || !level) {
