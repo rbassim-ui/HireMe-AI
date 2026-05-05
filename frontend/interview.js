@@ -248,10 +248,46 @@ async function evaluateAnswer(question, answer) {
 
 let questions = [];
 
-function init() {
+// Create a session in the database when interview starts
+async function createSession() {
+  try {
+    const response = await fetch(`${API_URL}/api/session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: session.name || 'Candidat',
+        domain: session.domain || 'Tech',
+        role: session.role || 'Général',
+        level: session.level || 'Débutant'
+      })
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (response.ok && data.success && data.session_id) {
+      session.session_id = data.session_id;
+      session.user_id = data.user_id;
+      localStorage.setItem('hireme_session', JSON.stringify(session));
+      console.log('Session created:', data.session_id);
+      return data.session_id;
+    } else {
+      console.warn('Failed to create session:', data.message);
+      return null;
+    }
+  } catch (err) {
+    console.warn('Session creation failed:', err);
+    return null;
+  }
+}
+
+async function init() {
   document.getElementById('displayName').textContent  = session.name  || 'Candidat';
   document.getElementById('displayRole').textContent  = session.role  || '—';
   document.getElementById('displayLevel').textContent = session.level || '—';
+
+  // Create session in database
+  if (!session.session_id) {
+    await createSession();
+  }
 
   // Initialize question tracking for this session
   sessionStorage.setItem('hireme_asked_questions', JSON.stringify([]));

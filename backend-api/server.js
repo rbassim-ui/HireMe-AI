@@ -240,6 +240,53 @@ app.post('/api/evaluate-answer', async (req, res) => {
   }
 });
 
+// POST /api/answer - Save individual answer
+app.post('/api/answer', (req, res) => {
+  try {
+    const { session_id, question, answer, score, feedback } = req.body || {};
+    
+    if (!session_id || !question || !answer) {
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
+    }
+
+    const sql = 'INSERT INTO answers (session_id, question, answer, score, feedback) VALUES (?, ?, ?, ?, ?)';
+    const stmt = db.prepare(sql);
+    const info = stmt.run(
+      Number(session_id),
+      String(question),
+      String(answer),
+      Number(score) || 0,
+      String(feedback) || ''
+    );
+    
+    const answerId = info.lastInsertRowid || info.lastInsertId || 0;
+    res.json({ success: true, answer_id: answerId, message: 'Answer saved' });
+  } catch (err) {
+    console.error('POST /api/answer error', err);
+    res.status(500).json({ success: false, message: 'Unable to save answer' });
+  }
+});
+
+// POST /api/session/score - Update session with final score
+app.post('/api/session/score', (req, res) => {
+  try {
+    const { session_id, total_score, badge } = req.body || {};
+    
+    if (!session_id) {
+      return res.status(400).json({ success: false, message: 'Missing session_id' });
+    }
+
+    const sql = 'UPDATE sessions SET total_score = ?, badge = ? WHERE id = ?';
+    const stmt = db.prepare(sql);
+    stmt.run(Number(total_score) || 0, String(badge) || 'Pending', Number(session_id));
+
+    res.json({ success: true, message: 'Session score updated' });
+  } catch (err) {
+    console.error('POST /api/session/score error', err);
+    res.status(500).json({ success: false, message: 'Unable to update session score' });
+  }
+});
+
 // GET /api/session/:id
 app.get('/api/session/:id', (req, res) => {
   const id = Number(req.params.id) || 0;
